@@ -15,6 +15,13 @@ mongoose.connect(process.env.DATABASE_URL, {
 // Routes / Controllers
 const userController = require('./controllers/users');
 app.use('/users', userController);
+const sessionsController = require('./controllers/sessions');
+app.use('/sessions', sessionsController);
+
+// Temporary root route. Please remove me when you add views:
+app.get("/", (req, res) => {
+	res.send("Root route");
+  });app.get('/')
 
 // Database Connection Error / Success
 const db = mongoose.connection;
@@ -26,6 +33,15 @@ db.on('disconnected', () => console.log('mongo disconnected'));
 // Body parser middleware: give us access to req.body
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware
+app.use(
+    session({
+        secret: process.env.SECRET,
+        resave: false,
+        saveUninitialized: false
+    })); 
+
+	
 
 // Listener
 const PORT = process.env.PORT;
